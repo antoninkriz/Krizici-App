@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Křižíci - skolakrizik.cz</string>
+    <string name="app_version">DEV BUILD</string>
+
+    <string name="navigation_drawer_open">Otevřít navigaci</string>
+    <string name="navigation_drawer_close">Zavřít navigaci</string>
+
+    <string name="nav_supl">Suplování a rozvrhy</string>
+    <string name="nav_contacts">Kontakty</string>
+    <string name="nav_info">Informace</string>
+    <string name="nav_about">O Aplikaci</string>
+
+    <string name="reload_app">Zkusit znovu</string>
+    <string name="load_supl">Načíst suplování</string>
+
+    <string name="doubleclicktoexit">Stiskněte ještě jednou zpět pro ukončení</string>
+
+    <string name="aboutAuthor">Aplikaci vytvořil Antonín Kříž, 2018</string>
+    <string name="aboutApp">Neoficiální aplikace pro suplování a rozvrhy pro VOŠ a SPŠE Františka Křižíka</string>
+    <string name="aboutLicence">Aplikace je pod licencí MIT</string>
+    <string name="urlKrizik">Web školy: skolakrizik.cz</string>
+    <string name="urlAntoninKrizEu">Autor: antoninkriz.eu</string>
+    <string name="urlGithub">Zdrojový kód: github.com/tonakriz/krizici</string>
+</resources>
