@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/mainFragment_menuGroup">
+        <item
+            android:id="@+id/reloadWebViewItem"
+            android:title="@string/reload_webView" />
+        <item
+            android:id="@+id/selectDefaultClassMenu"
+            android:title="@string/select_default_class">
+            <menu></menu>
+        </item>
+    </group>
+</menu>

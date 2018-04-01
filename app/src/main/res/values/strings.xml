@@ -2,6 +2,9 @@
     <string name="app_name">Křižíci - skolakrizik.cz</string>
     <string name="app_version">DEV BUILD</string>
 
+    <string name="select_default_class">Zvolte třídu</string>
+    <string name="reload_webView">Znovu načíst obsah</string>
+
     <string name="navigation_drawer_open">Otevřít navigaci</string>
     <string name="navigation_drawer_close">Zavřít navigaci</string>
 

@@ -1,6 +1,5 @@
 package eu.antoninkriz.krizici.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +19,7 @@ import eu.antoninkriz.krizici.R;
 
 public class FragmentView extends Fragment {
 
-    private int tabposition;
+    private WebView vw;
 
     @Nullable
     @Override
@@ -28,9 +27,11 @@ public class FragmentView extends Fragment {
         View view = inflater.inflate(R.layout.fragment_view, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
+        // setHasOptionsMenu(true);
+
         // Init controls
         MaterialSpinner s = view.findViewById(R.id.spinner);
-        final WebView vw = view.findViewById(R.id.webview);
+        vw = view.findViewById(R.id.webview);
         vw.getSettings().setJavaScriptEnabled(false);
         vw.getSettings().setLoadWithOverviewMode(true);
         vw.getSettings().setUseWideViewPort(true);
@@ -39,7 +40,7 @@ public class FragmentView extends Fragment {
         vw.getSettings().setDisplayZoomControls(false);
 
         // Get selected tab from arguments bundle
-        tabposition = getArguments().getInt("pos");
+        int tabposition = getArguments().getInt("pos");
 
         // If "Supl" then skip
         if (tabposition == -1) {
@@ -62,25 +63,30 @@ public class FragmentView extends Fragment {
             return view;
         }
 
+        // CONTINUE IF NOT SUPL
+
         // Get list from arguments bundle
         ArrayList<String> list = new ArrayList<>();
         ArrayList<String> passedAsArg = getArguments().getStringArrayList("list");
         list.add("Zvolte položu");
         list.addAll(passedAsArg);
 
-        Context c = getContext();
+        final String type = (tabposition == 0) ? "tridy" : (tabposition == 1) ? "ucitele" : "ucebny";
+        final String urlFormat = "https://files.antoninkriz.eu/apps/krizici/img" + type + "-%s.png";
 
-        if (c == null)
-            return view;
+        /* SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", 0);
+        int defaultClass = sharedPreferences.getInt("defaultClass", 0);
+
+        if (defaultClass > 0 && defaultClass < list.size() - 1) {
+            vw.loadUrl(String.format(urlFormat, defaultClass));
+        } */
 
         s.setItems(list);
-
         s.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
                 if (position > 0) {
-                    String type = (tabposition == 0) ? "tridy" : (tabposition == 1) ? "ucitele" : "ucebny";
-                    vw.loadUrl("https://files.antoninkriz.eu/apps/krizici/img" + type + "-" + (position - 1) + ".png");
+                    vw.loadUrl(String.format(urlFormat, (position - 1)));
                 } else {
                     vw.loadUrl("about:blank");
                 }
@@ -90,4 +96,19 @@ public class FragmentView extends Fragment {
         return view;
     }
 
+    /*@Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getGroupId();
+
+        switch (id) {
+            case R.id.reloadWebViewItem: {
+                String url = vw.getUrl();
+                vw.loadUrl(url);
+                return super.onOptionsItemSelected(item);
+            }
+            default: {
+                return false;
+            }
+        }
+    }*/
 }

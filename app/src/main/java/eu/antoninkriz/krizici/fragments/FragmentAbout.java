@@ -1,6 +1,7 @@
 package eu.antoninkriz.krizici.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,9 +16,11 @@ public class FragmentAbout extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_about, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+        //setHasOptionsMenu(true);
 
         TabLayout tl = getActivity().findViewById(R.id.tab_layout);
         tl.animate().scaleY(1).setInterpolator(new DecelerateInterpolator()).start();
@@ -25,5 +28,10 @@ public class FragmentAbout extends Fragment {
 
         return view;
     }
+
+    /* @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.setGroupVisible(R.id.mainFragment_menuGroup, false);
+    }*/
 
 }

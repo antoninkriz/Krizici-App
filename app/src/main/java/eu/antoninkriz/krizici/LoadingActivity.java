@@ -16,11 +16,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.net.URL;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -48,7 +46,7 @@ public class LoadingActivity extends AppCompatActivity {
             connErr = -1;
         }
 
-        new Async_GetJson().execute(connErr);
+        new Async_GetJson(this).execute(connErr);
     }
 
     @Override
@@ -65,14 +63,21 @@ public class LoadingActivity extends AppCompatActivity {
         mBackPressed = System.currentTimeMillis();
     }
 
-    private class Async_GetJson extends AsyncTask<Integer, Void, Void> {
-        private class Result {
-            int ok;
-            String jRozvrh = "";
-            String jContacts = "";
-        }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
 
+        prefs = null;
+        mBackPressed = 0;
+    }
+
+    private static class Async_GetJson extends AsyncTask<Integer, Void, Void> {
         private Result r;
+        private WeakReference<LoadingActivity> activityReference;
+
+        Async_GetJson(LoadingActivity context) {
+            activityReference = new WeakReference<LoadingActivity>(context);
+        }
 
         protected Void doInBackground(Integer... ints) {
             r = new Result();
@@ -105,6 +110,8 @@ public class LoadingActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
 
+            final LoadingActivity activity = activityReference.get();
+
             if (r.ok != -1) {
                 String error;
                 switch (r.ok) {
@@ -125,17 +132,17 @@ public class LoadingActivity extends AppCompatActivity {
                         break;
                 }
 
-                ProgressBar prg = findViewById(R.id.progressBar);
-                Button reloadButton = findViewById(R.id.button);
-                TextView errorTextView = findViewById(R.id.errorTextView);
+                ProgressBar prg = activity.findViewById(R.id.progressBar);
+                Button reloadButton = activity.findViewById(R.id.button);
+                TextView errorTextView = activity.findViewById(R.id.errorTextView);
 
                 prg.setVisibility(View.GONE);
 
                 reloadButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        finish();
-                        startActivity(getIntent());
+                        activity.finish();
+                        activity.startActivity(activity.getIntent());
                     }
                 });
                 reloadButton.setVisibility(View.VISIBLE);
@@ -143,11 +150,11 @@ public class LoadingActivity extends AppCompatActivity {
                 errorTextView.setText(error);
                 errorTextView.setVisibility(View.VISIBLE);
             } else {
-                Intent i = new Intent(LoadingActivity.this, MainActivity.class);
+                Intent i = new Intent(activity, MainActivity.class);
                 i.putExtra("jsonRozvrh", r.jRozvrh);
                 i.putExtra("jsonContacts", r.jContacts);
-                startActivity(i);
-                finish();
+                activity.startActivity(i);
+                activity.finish();
             }
         }
 
@@ -184,6 +191,12 @@ public class LoadingActivity extends AppCompatActivity {
 
             r.ok = 3;
             return false;
+        }
+
+        private class Result {
+            int ok;
+            String jRozvrh = "";
+            String jContacts = "";
         }
     }
 }

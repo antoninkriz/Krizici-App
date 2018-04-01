@@ -9,6 +9,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
@@ -31,6 +33,7 @@ public class FragmentMain extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
+        // setHasOptionsMenu(true);
 
         String json = getArguments().getString("jsonRozvrh");
 
@@ -65,6 +68,51 @@ public class FragmentMain extends Fragment {
         }
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.setGroupVisible(R.id.mainFragment_menuGroup, true);
+        SubMenu subMenu = menu.getItem(1).getSubMenu();
+        subMenu.clear();
+
+        // Custom submenu item ID
+        final int customId = 1000;
+        int id = 0;
+
+        subMenu.add(0, customId + id, id, "Žádná");
+        id++;
+
+        for (String s : list.get(0)) {
+            subMenu.add(0, customId + id, id, s);
+            ++id;
+        }
+
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    /* @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i("------------OPTIONSMENU", String.valueOf(item.getItemId()));
+
+        int id = item.getGroupId();
+
+        switch (id) {
+            case R.id.reloadWebViewItem: {
+                return false;
+            }
+            default: {
+                if (id >= 1000 || id < (1000 + list.get(0).size())) {
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor e = sharedPreferences.edit();
+                    e.putInt("defaultClass", id - 1000);
+                    return super.onOptionsItemSelected(item);
+                } else {
+                    return false;
+                }
+            }
+        }
+    } */
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -82,6 +130,7 @@ public class FragmentMain extends Fragment {
 
         // Set adapter to viewPager
         ViewPager viewPager = view.findViewById(R.id.viewPager);
+        viewPager.setOffscreenPageLimit(4);
         viewPager.setAdapter(_adapter);
 
         // Setup tabs and show them in a cool way
@@ -101,6 +150,13 @@ public class FragmentMain extends Fragment {
         }
 
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        list = null;
     }
 
     private class ViewPagerAdapter extends FragmentPagerAdapter {

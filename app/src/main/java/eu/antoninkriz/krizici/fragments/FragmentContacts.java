@@ -31,16 +31,7 @@ import eu.antoninkriz.krizici.R;
 
 public class FragmentContacts extends Fragment {
 
-    private class Contact {
-        String predmety;
-        String jmeno;
-        String zkratka;
-        String telefon;
-        String email;
-    }
-
     private List<Contact> contacts = new ArrayList<>();
-
     private Context c;
     private float scale;
 
@@ -49,6 +40,8 @@ public class FragmentContacts extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+        // setHasOptionsMenu(true);
 
         TabLayout tl = getActivity().findViewById(R.id.tab_layout);
         tl.animate().scaleY(1).setInterpolator(new DecelerateInterpolator()).start();
@@ -91,7 +84,7 @@ public class FragmentContacts extends Fragment {
     private View addContactsCard(final int id) {
         int dp4 = dpToPx(4);
         int dp5 = dpToPx(5);
-        
+
         // CardView
         CardView cw = new CardView(c);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -107,7 +100,7 @@ public class FragmentContacts extends Fragment {
 
         // TextView layout params
         ViewGroup.MarginLayoutParams lpm = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        
+
         TextView twName = new TextView(c);
         twName.setTextSize(18);
         twName.setText(contacts.get(id).zkratka + " - " + contacts.get(id).jmeno);
@@ -164,7 +157,29 @@ public class FragmentContacts extends Fragment {
         return cw;
     }
 
+    /* @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.setGroupVisible(R.id.mainFragment_menuGroup, false);
+    } */
+
     private int dpToPx(int dp) {
         return (int) (dp * scale + 0.5f);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        contacts = null;
+        c = null;
+        scale = 0;
+    }
+
+    private class Contact {
+        String predmety;
+        String jmeno;
+        String zkratka;
+        String telefon;
+        String email;
     }
 }
