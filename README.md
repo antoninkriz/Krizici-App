@@ -1,2 +1,2 @@
 # Krizici-Server
-Klientska aplikace pro Krizici-App
+Klientska aplikace pro Krizici-Server
