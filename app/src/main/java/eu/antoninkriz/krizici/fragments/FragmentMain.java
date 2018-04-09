@@ -1,5 +1,6 @@
 package eu.antoninkriz.krizici.fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,38 +34,53 @@ public class FragmentMain extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(null);
-        // setHasOptionsMenu(true);
 
-        String json = getArguments().getString("jsonRozvrh");
+        String json = null;
 
-        if (json != null) {
-            try {
-                JsonObject jo_Object = Json.parse(json).asObject();
-
-                ArrayList<String> templist = new ArrayList<>();
-
-                JsonArray ja_Arr = jo_Object.get("tridy").asArray();
-                for (JsonValue v : ja_Arr) {
-                    templist.add(v.asString());
-                }
-                list.add(templist);
-                templist = new ArrayList<>();
-
-                ja_Arr = jo_Object.get("ucitele").asArray();
-                for (JsonValue v : ja_Arr) {
-                    templist.add(v.asString());
-                }
-                list.add(templist);
-                templist = new ArrayList<>();
-
-                ja_Arr = jo_Object.get("ucebny").asArray();
-                for (JsonValue v : ja_Arr) {
-                    templist.add(v.asString());
-                }
-                list.add(templist);
-            } catch (Exception e) {
-                Toast.makeText(getContext(), "Nastala chyba načítání dat. Zkuste to znovu", Toast.LENGTH_LONG).show();
+        try {
+            Bundle bundle = getArguments();
+            if (bundle == null || !bundle.containsKey("jsonRozvrh")) {
+                return;
             }
+
+            bundle.getString("jsonRozvrh");
+            json = getArguments().getString("jsonRozvrh");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        if (json == null) {
+            Toast.makeText(getContext(), "Nastala chyba načítání dat #1. Zkuste to znovu", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        try {
+            JsonObject jo_Object = Json.parse(json).asObject();
+
+            ArrayList<String> templist = new ArrayList<>();
+
+            JsonArray ja_Arr = jo_Object.get("tridy").asArray();
+            for (JsonValue v : ja_Arr) {
+                templist.add(v.asString());
+            }
+            list.add(templist);
+            templist = new ArrayList<>();
+
+            ja_Arr = jo_Object.get("ucitele").asArray();
+            for (JsonValue v : ja_Arr) {
+                templist.add(v.asString());
+            }
+            list.add(templist);
+            templist = new ArrayList<>();
+
+            ja_Arr = jo_Object.get("ucebny").asArray();
+            for (JsonValue v : ja_Arr) {
+                templist.add(v.asString());
+            }
+            list.add(templist);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(getContext(), "Nastala chyba načítání dat #2. Zkuste to znovu", Toast.LENGTH_LONG).show();
         }
     }
 
@@ -89,29 +105,6 @@ public class FragmentMain extends Fragment {
         super.onPrepareOptionsMenu(menu);
     }
 
-    /* @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i("------------OPTIONSMENU", String.valueOf(item.getItemId()));
-
-        int id = item.getGroupId();
-
-        switch (id) {
-            case R.id.reloadWebViewItem: {
-                return false;
-            }
-            default: {
-                if (id >= 1000 || id < (1000 + list.get(0).size())) {
-                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor e = sharedPreferences.edit();
-                    e.putInt("defaultClass", id - 1000);
-                    return super.onOptionsItemSelected(item);
-                } else {
-                    return false;
-                }
-            }
-        }
-    } */
-
 
     @Nullable
     @Override
@@ -130,11 +123,16 @@ public class FragmentMain extends Fragment {
 
         // Set adapter to viewPager
         ViewPager viewPager = view.findViewById(R.id.viewPager);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(_adapter.getCount());
         viewPager.setAdapter(_adapter);
 
         // Setup tabs and show them in a cool way
-        TabLayout tl = getActivity().findViewById(R.id.tab_layout);
+        Activity activity = getActivity();
+        if (activity == null) {
+            return view;
+        }
+
+        TabLayout tl = activity.findViewById(R.id.tab_layout);
         tl.animate().scaleY(1).setInterpolator(new DecelerateInterpolator()).start();
         tl.setVisibility(View.VISIBLE);
         tl.setupWithViewPager(viewPager, true);
@@ -199,13 +197,13 @@ public class FragmentMain extends Fragment {
                     title = "Suplování";
                     break;
                 case 1:
-                    title = "Žáci";
+                    title = "Třídy";
                     break;
                 case 2:
                     title = "Učitelé";
                     break;
                 case 3:
-                    title = "Třídy";
+                    title = "Učebny";
                     break;
             }
 

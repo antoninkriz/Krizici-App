@@ -1,5 +1,6 @@
 package eu.antoninkriz.krizici.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -41,9 +42,15 @@ public class FragmentContacts extends Fragment {
         View view = inflater.inflate(R.layout.fragment_contacts, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-        // setHasOptionsMenu(true);
+        Bundle bundle = getArguments();
+        Activity activity = getActivity();
 
-        TabLayout tl = getActivity().findViewById(R.id.tab_layout);
+        if (bundle == null || activity == null || !bundle.containsKey("jsonContacts")) {
+            Toast.makeText(getContext(), "Nastala chyba při načítání kontaktů. Zkuste to znovu", Toast.LENGTH_LONG).show();
+            return view;
+        }
+
+        TabLayout tl = activity.findViewById(R.id.tab_layout);
         tl.animate().scaleY(1).setInterpolator(new DecelerateInterpolator()).start();
         tl.setVisibility(View.GONE);
 
@@ -51,7 +58,7 @@ public class FragmentContacts extends Fragment {
         scale = getResources().getDisplayMetrics().density;
         c = getContext();
 
-        String json = getArguments().getString("jsonContacts");
+        String json = bundle.getString("jsonContacts");
 
         if (json != null) {
             try {
@@ -73,7 +80,7 @@ public class FragmentContacts extends Fragment {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), "Nastala chyba načítání kontaktů", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Nastala chyba načítání kontaktů", Toast.LENGTH_SHORT).show();
                 return view;
             }
         }
@@ -103,7 +110,7 @@ public class FragmentContacts extends Fragment {
 
         TextView twName = new TextView(c);
         twName.setTextSize(18);
-        twName.setText(contacts.get(id).zkratka + " - " + contacts.get(id).jmeno);
+        twName.setText(String.format("%s - %s", contacts.get(id).zkratka, contacts.get(id).jmeno));
         twName.setLayoutParams(lpm);
         twName.setPadding(dp4, dp4, dp4, dp4);
         lnin.addView(twName);
@@ -156,11 +163,6 @@ public class FragmentContacts extends Fragment {
         cw.addView(lnin);
         return cw;
     }
-
-    /* @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        menu.setGroupVisible(R.id.mainFragment_menuGroup, false);
-    } */
 
     private int dpToPx(int dp) {
         return (int) (dp * scale + 0.5f);

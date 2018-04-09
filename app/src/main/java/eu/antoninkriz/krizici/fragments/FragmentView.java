@@ -7,9 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
@@ -20,14 +23,28 @@ import eu.antoninkriz.krizici.R;
 public class FragmentView extends Fragment {
 
     private WebView vw;
+    private WebViewClient webViewClient = new WebViewClient() {
+        @Override
+        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            displayError(view);
+        }
+
+        @Override
+        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            super.onReceivedError(view, errorCode, description, failingUrl);
+        }
+
+        private void displayError(WebView wv) {
+            wv.setVisibility(View.INVISIBLE);
+            Toast.makeText(getContext(), "Nastala chyba při načítání. Zkuste to znovu", Toast.LENGTH_LONG).show();
+        }
+    };
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_view, container, false);
         view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-
-        // setHasOptionsMenu(true);
 
         // Init controls
         MaterialSpinner s = view.findViewById(R.id.spinner);
@@ -38,15 +55,21 @@ public class FragmentView extends Fragment {
         vw.getSettings().setSupportZoom(true);
         vw.getSettings().setBuiltInZoomControls(true);
         vw.getSettings().setDisplayZoomControls(false);
+        vw.setWebViewClient(webViewClient);
 
         // Get selected tab from arguments bundle
+        Bundle bundle = getArguments();
+        if (bundle == null || !bundle.containsKey("pos")) {
+            Toast.makeText(getContext(), "Nastala chyba při načítání rozvrhů. Zkuste to znovu", Toast.LENGTH_LONG).show();
+            return view;
+        }
+
         int tabposition = getArguments().getInt("pos");
 
         // If "Supl" then skip
         if (tabposition == -1) {
             s.setVisibility(View.GONE);
             vw.setVisibility(View.INVISIBLE);
-            vw.setWebViewClient(new WebViewClient());
 
             final Button btnLoadSupl = view.findViewById(R.id.buttonLoadSupl);
             btnLoadSupl.setVisibility(View.VISIBLE);
@@ -74,13 +97,6 @@ public class FragmentView extends Fragment {
         final String type = (tabposition == 0) ? "tridy" : (tabposition == 1) ? "ucitele" : "ucebny";
         final String urlFormat = "https://files.antoninkriz.eu/apps/krizici/img" + type + "-%s.png";
 
-        /* SharedPreferences sharedPreferences = getActivity().getSharedPreferences("prefs", 0);
-        int defaultClass = sharedPreferences.getInt("defaultClass", 0);
-
-        if (defaultClass > 0 && defaultClass < list.size() - 1) {
-            vw.loadUrl(String.format(urlFormat, defaultClass));
-        } */
-
         s.setItems(list);
         s.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
@@ -95,20 +111,4 @@ public class FragmentView extends Fragment {
 
         return view;
     }
-
-    /*@Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getGroupId();
-
-        switch (id) {
-            case R.id.reloadWebViewItem: {
-                String url = vw.getUrl();
-                vw.loadUrl(url);
-                return super.onOptionsItemSelected(item);
-            }
-            default: {
-                return false;
-            }
-        }
-    }*/
 }

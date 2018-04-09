@@ -98,12 +98,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
-    }*/
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -135,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void changeFragment(Fragment fragment) {
+    private void changeFragment(Fragment fragment) {
         // Dont change fragment when fragment is already active
         if (fragment == null) return;
         if (fragment.isAdded()) return;
@@ -144,5 +138,14 @@ public class MainActivity extends AppCompatActivity
         transaction.replace(R.id.frame_container, fragment);
         transaction.disallowAddToBackStack();
         transaction.commit();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        fragment = null;
+        mBackPressed = 0;
+        b = null;
     }
 }
