@@ -1,1 +1,19 @@
-[{"outputType":{"type":"APK"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":1},"path":"app-release.apk","properties":{"packageId":"eu.antoninkriz.krizici","split":"","minSdkVersion":"19"}}]
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkInfo": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 2,
+      "versionName": "1.1 - Appka s tradicí v centru Prahy",
+      "enabled": true,
+      "outputFile": "app-release.apk",
+      "fullName": "release",
+      "baseName": "release"
+    },
+    "path": "app-release.apk",
+    "properties": {}
+  }
+]
