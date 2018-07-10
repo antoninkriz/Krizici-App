@@ -37,10 +37,12 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Get downloaded JSON strings
         Intent i = getIntent();
         String jsonRozvrh = i.getStringExtra("jsonRozvrh");
         String jsonContacts = i.getStringExtra("jsonContacts");
 
+        // Add them to the budnle so we can move this around
         b.putString("jsonRozvrh", jsonRozvrh);
         b.putString("jsonContacts", jsonContacts);
 
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Set some text in navigation drawers header
         View header = navigationView.getHeaderView(0);
         TextView subText = header.findViewById(R.id.navSubtitle);
         subText.setText(BuildConfig.VERSION_NAME);
@@ -98,10 +101,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        // Handle navigation drawer item clicks here
+        // Handle navigation drawer item clicks
         int id = item.getItemId();
 
         switch (id) {
@@ -130,7 +132,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void changeFragment(Fragment fragment) {
-        // Dont change fragment when fragment is already active
+        // Dont change fragment when same fragment is already active
         if (fragment == null) return;
         if (fragment.isAdded()) return;
 
@@ -142,10 +144,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-
         fragment = null;
         mBackPressed = 0;
         b = null;
+
+        super.onDestroy();
     }
 }

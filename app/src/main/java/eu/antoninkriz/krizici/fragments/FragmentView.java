@@ -66,7 +66,7 @@ public class FragmentView extends Fragment {
 
         int tabposition = getArguments().getInt("pos");
 
-        // If "Supl" then skip
+        // If tab "Supl"
         if (tabposition == -1) {
             s.setVisibility(View.GONE);
             vw.setVisibility(View.INVISIBLE);
@@ -86,8 +86,7 @@ public class FragmentView extends Fragment {
             return view;
         }
 
-        // CONTINUE IF NOT SUPL
-
+        // Continue if not tab "Supl"
         // Get list from arguments bundle
         ArrayList<String> list = new ArrayList<>();
         ArrayList<String> passedAsArg = getArguments().getStringArrayList("list");
