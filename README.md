@@ -1,2 +1,2 @@
 # Krizici-App
-Klientska aplikace pro Krizici-Server
+Client app for [Krizici-Server](https://github.com/antoninkriz/Krizici-Server)
